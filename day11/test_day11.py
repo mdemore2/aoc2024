@@ -25,7 +25,7 @@ def test_solve_part2():
     final_length = 0
     for stone in my_input:
         final_length += algo([stone], 75, length_only=True)
-    gc.collect()
+        gc.collect()
 
     print(final_length)
     assert False
