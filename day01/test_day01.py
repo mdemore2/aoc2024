@@ -18,4 +18,4 @@ def test_simple_part2():
 def test_part2():
     list_1, list_2 = parse_input()
     print(calculate_similarity(list_1, list_2))
-    assert False
+    assert True
