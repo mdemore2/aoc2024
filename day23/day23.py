@@ -16,10 +16,11 @@ def parse_input(filename: str) -> list:
 def analyze_graph(edges: list) -> int:
     graph = nx.Graph()
     graph.add_edges_from(edges)
-    sets_of_3 = []
+    sets_of_3t = []
     print(list(graph.degree()))
     for clique in nx.enumerate_all_cliques(graph):
         if len(clique) == 3:
             print('clique size 3')
-            sets_of_3.append(set(list(clique)))
-    return len(sets_of_3)
+            if any('t' in node for node in list(clique)):
+                sets_of_3t.append(set(list(clique)))
+    return len(sets_of_3t)
