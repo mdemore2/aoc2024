@@ -3,7 +3,7 @@ def parse_input(filename: str) -> tuple:
     connections = {}
     with open(filename, 'r') as f:
         line = f.readline()
-        while line:
+        while not line.isspace():
             wire, value = line.split(':')
             start_values[wire] = int(value.strip())
             line = f.readline()
@@ -11,6 +11,7 @@ def parse_input(filename: str) -> tuple:
         while line:
             inputs, output = line.split('->')
             connections[inputs.strip()] = output.strip()
+            line = f.readline()
 
     return start_values, connections
 
@@ -21,6 +22,26 @@ def route(values: dict, connections: dict) -> dict:
             input = connection
             output = logical_operation(values, input)
             values[connections[connection]] = output
+    for connection in connections.keys():
+        if not (connection.startswith('x') or connection.startswith('y')):
+            input = connection
+            output = logical_operation(values, input)
+            values[connections[connection]] = output
+
+    return values
+
+
+def calculate_number(values: dict):
+    z_list = []
+    for wire in values.keys():
+        if wire.startswith('z'):
+            z_list.append(f'{wire} {values[wire]}')
+    z_list.sort(reverse=True)
+    bin_str = ''
+    for bit in z_list:
+        bin_str += str(bit.split()[-1])
+    print(bin_str)
+    return int(bin_str, 2)
 
 
 def logical_operation(values: dict, input: str) -> int:
