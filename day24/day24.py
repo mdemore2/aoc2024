@@ -42,37 +42,36 @@ def route(values: dict, connections: dict) -> dict:
 
 
 def recursive_route(values: dict, connections: dict) -> dict:
-    print(connections)
     for inputs in connections.keys():
         wire_1, operator, wire_2 = inputs.split()
-        if wire_1 not in values.keys():
-            to_connect = list(connections.keys())[list(
+        if wire_1 not in list(values.keys()):
+            new_connect = list(connections.keys())[list(
                 connections.values()).index(wire_1)]
-            values = recursive_connect(to_connect, values, connections)
-        if wire_2 not in values.keys():
-            to_connect = list(connections.keys())[list(
-                connections.values()).index(wire_1)]
-            values = recursive_connect(to_connect, values, connections)
-        else:
-            output = logical_operation(values, inputs)
-            values[connections[inputs]] = output
-    print(values)
+            values = recursive_connect(new_connect, values, connections)
+        if wire_2 not in list(values.keys()):
+            new_connect = list(connections.keys())[list(
+                connections.values()).index(wire_2)]
+            values = recursive_connect(new_connect, values, connections)
+        output = logical_operation(values, inputs)
+        values[connections[inputs]] = output
     return values
 
 
 def recursive_connect(to_connect: str, values: dict, connections: dict) -> dict:
+    print('trying to connect ', to_connect)
+    print('for ', connections[to_connect])
+    print('with current values ', values)
     wire_1, operator, wire_2 = to_connect.split()
-    if wire_1 not in values.keys():
-        to_connect = list(connections.keys())[list(
+    if wire_1 not in list(values.keys()):
+        new_connect = list(connections.keys())[list(
             connections.values()).index(wire_1)]
-        values = recursive_connect(to_connect, values, connections)
-    if wire_2 not in values.keys():
-        to_connect = list(connections.keys())[list(
-            connections.values()).index(wire_1)]
-        values = recursive_connect(to_connect, values, connections)
-    else:
-        output = logical_operation(values, to_connect)
-        values[connections[to_connect]] = output
+        values = recursive_connect(new_connect, values, connections)
+    if wire_2 not in list(values.keys()):
+        new_connect = list(connections.keys())[list(
+            connections.values()).index(wire_2)]
+        values = recursive_connect(new_connect, values, connections)
+    output = logical_operation(values, to_connect)
+    values[connections[to_connect]] = output
     return values
 
 
@@ -96,6 +95,7 @@ def logical_operation(values: dict, input: str) -> int:
         input_1 = values[wire_1]
         input_2 = values[wire_2]
     except KeyError as e:
+        print('cant connect', input)
         return False
     match operator:
         case 'AND':
