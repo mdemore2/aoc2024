@@ -10,7 +10,10 @@ def parse_input(filename: str) -> tuple:
         line = f.readline()  # get past line break for connections
         while line:
             inputs, output = line.split('->')
-            connections[inputs.strip()] = output.strip()
+            # connections[inputs.strip()] = output.strip()
+            # need to flip this mapping because multiple wires have same input connection
+            # cant have duplicate keys
+            connections[output.strip()] = inputs.strip()
             line = f.readline()
 
     return start_values, connections
@@ -42,36 +45,49 @@ def route(values: dict, connections: dict) -> dict:
 
 
 def recursive_route(values: dict, connections: dict) -> dict:
-    for inputs in connections.keys():
+    for inputs in connections.values():
+        print('trying to connect ', inputs)
+        print('for ', list(connections.keys())[
+              list(connections.values()).index(inputs)])
+        print('with current values ', values)
         wire_1, operator, wire_2 = inputs.split()
         if wire_1 not in list(values.keys()):
-            new_connect = list(connections.keys())[list(
-                connections.values()).index(wire_1)]
+            new_connect = list(connections.values())[list(
+                connections.keys()).index(wire_1)]
             values = recursive_connect(new_connect, values, connections)
         if wire_2 not in list(values.keys()):
-            new_connect = list(connections.keys())[list(
-                connections.values()).index(wire_2)]
+            new_connect = list(connections.values())[list(
+                connections.keys()).index(wire_2)]
             values = recursive_connect(new_connect, values, connections)
         output = logical_operation(values, inputs)
-        values[connections[inputs]] = output
+        values[list(connections.keys())[
+            list(connections.values()).index(inputs)]] = output
+
+    for output in connections.keys():
+        if output not in values.keys():
+            value = logical_operation(values, connections[output])
+            values[output] = value
+            print('connecting for ', output)
     return values
 
 
 def recursive_connect(to_connect: str, values: dict, connections: dict) -> dict:
     print('trying to connect ', to_connect)
-    print('for ', connections[to_connect])
+    print('for ', list(connections.keys())[
+          list(connections.values()).index(to_connect)])
     print('with current values ', values)
     wire_1, operator, wire_2 = to_connect.split()
     if wire_1 not in list(values.keys()):
-        new_connect = list(connections.keys())[list(
-            connections.values()).index(wire_1)]
+        new_connect = list(connections.values())[list(
+            connections.keys()).index(wire_1)]
         values = recursive_connect(new_connect, values, connections)
     if wire_2 not in list(values.keys()):
-        new_connect = list(connections.keys())[list(
-            connections.values()).index(wire_2)]
+        new_connect = list(connections.values())[list(
+            connections.keys()).index(wire_2)]
         values = recursive_connect(new_connect, values, connections)
     output = logical_operation(values, to_connect)
-    values[connections[to_connect]] = output
+    values[list(connections.keys())[
+        list(connections.values()).index(to_connect)]] = output
     return values
 
 
