@@ -6,3 +6,11 @@ def test_example():
     print(locks)
     print(keys)
     assert fit_combos(locks, keys) == 3
+
+
+def test_part1():
+    locks, keys = parse_input('input.txt')
+    # print(locks)
+    # print(keys)
+    print(fit_combos(locks, keys))
+    assert True
