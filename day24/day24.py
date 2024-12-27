@@ -19,31 +19,6 @@ def parse_input(filename: str) -> tuple:
     return start_values, connections
 
 
-def route(values: dict, connections: dict) -> dict:
-    completed = set()
-    incomplete = True
-    for connection in connections.keys():
-        if connection.startswith('x') or connection.startswith('y'):
-            input = connection
-            output = logical_operation(values, input)
-            values[connections[connection]] = output
-            completed.add(connections[connection])
-    while incomplete:
-        incomplete = False
-        for connection in connections.keys():
-            if connections[connection] not in completed:
-                input = connection
-
-                output = logical_operation(values, input)
-                if not output:
-                    incomplete = True
-                    continue
-                values[connections[connection]] = output
-                completed.add(connections[connection])
-
-    return values
-
-
 def recursive_route(values: dict, connections: dict) -> dict:
     for inputs in connections.values():
         print('trying to connect ', inputs)
@@ -142,3 +117,46 @@ def logical_or(input_1: int, input_2: int) -> int:
         return 1
     else:
         return 0
+
+
+def get_x_number(values: dict) -> int:
+    x_list = []
+    for wire in values.keys():
+        if wire.startswith('x'):
+            x_list.append(f'{wire} {values[wire]}')
+    x_list.sort(reverse=True)
+    print(x_list)
+    bin_str = ''
+    for bit in x_list:
+        bin_str += str(bit.split()[-1])
+    print(bin_str)
+    return int(bin_str, 2)
+
+
+def get_y_number(values: dict) -> int:
+    y_list = []
+    for wire in values.keys():
+        if wire.startswith('y'):
+            y_list.append(f'{wire} {values[wire]}')
+    y_list.sort(reverse=True)
+    print(y_list)
+    bin_str = ''
+    for bit in y_list:
+        bin_str += str(bit.split()[-1])
+    print(bin_str)
+    return int(bin_str, 2)
+
+
+def find_bad_bits(values: dict) -> list:
+    x = get_x_number(values)
+    y = get_y_number(values)
+    goal_z = x + y
+    bin_goal_z = bin(goal_z).replace("0b", "")
+    current_z = calculate_number(values)
+    bin_current_z = bin(current_z).replace("0b", "")
+    num_bits = len(bin_current_z)
+    bad_bits = []
+    for index in range(len(bin_current_z)):
+        if bin_current_z[index] != bin_goal_z[index]:
+            bad_bits.append(num_bits - index)
+    return bad_bits
