@@ -1,6 +1,6 @@
 from day24 import parse_input, calculate_number, recursive_route
 from day24 import logical_xor, logical_and, logical_or
-from day24 import find_bad_bits
+from day24 import find_bad_bits, find_swap
 
 
 def test_xor():
@@ -50,11 +50,14 @@ def test_part1():
 
 
 def test_example_part2():
-    start_values, connections = parse_input('input.txt')
+    start_values, connections = parse_input('part2_example_input.txt')
     print(start_values)
     print(connections)
     values = recursive_route(start_values, connections)
     bad_bits = find_bad_bits(values)
     print(bad_bits)
-    assert False
-    # assert output == "z00,z01,z02,z05"
+    swaps = []
+    for bit in bad_bits:
+        swaps += find_swap(bit, values, connections)
+    output = swaps.sort().join(",")
+    assert output == "z00,z01,z02,z05"

@@ -21,10 +21,10 @@ def parse_input(filename: str) -> tuple:
 
 def recursive_route(values: dict, connections: dict) -> dict:
     for inputs in connections.values():
-        print('trying to connect ', inputs)
-        print('for ', list(connections.keys())[
-              list(connections.values()).index(inputs)])
-        print('with current values ', values)
+        # print('trying to connect ', inputs)
+        # print('for ', list(connections.keys())[
+        #      list(connections.values()).index(inputs)])
+        # print('with current values ', values)
         wire_1, operator, wire_2 = inputs.split()
         if wire_1 not in list(values.keys()):
             new_connect = list(connections.values())[list(
@@ -47,10 +47,10 @@ def recursive_route(values: dict, connections: dict) -> dict:
 
 
 def recursive_connect(to_connect: str, values: dict, connections: dict) -> dict:
-    print('trying to connect ', to_connect)
-    print('for ', list(connections.keys())[
-          list(connections.values()).index(to_connect)])
-    print('with current values ', values)
+    # print('trying to connect ', to_connect)
+    # print('for ', list(connections.keys())[
+    #      list(connections.values()).index(to_connect)])
+    # print('with current values ', values)
     wire_1, operator, wire_2 = to_connect.split()
     if wire_1 not in list(values.keys()):
         new_connect = list(connections.values())[list(
@@ -72,11 +72,9 @@ def calculate_number(values: dict):
         if wire.startswith('z'):
             z_list.append(f'{wire} {values[wire]}')
     z_list.sort(reverse=True)
-    print(z_list)
     bin_str = ''
     for bit in z_list:
         bin_str += str(bit.split()[-1])
-    print(bin_str)
     return int(bin_str, 2)
 
 
@@ -125,11 +123,9 @@ def get_x_number(values: dict) -> int:
         if wire.startswith('x'):
             x_list.append(f'{wire} {values[wire]}')
     x_list.sort(reverse=True)
-    print(x_list)
     bin_str = ''
     for bit in x_list:
         bin_str += str(bit.split()[-1])
-    print(bin_str)
     return int(bin_str, 2)
 
 
@@ -139,11 +135,9 @@ def get_y_number(values: dict) -> int:
         if wire.startswith('y'):
             y_list.append(f'{wire} {values[wire]}')
     y_list.sort(reverse=True)
-    print(y_list)
     bin_str = ''
     for bit in y_list:
         bin_str += str(bit.split()[-1])
-    print(bin_str)
     return int(bin_str, 2)
 
 
@@ -154,9 +148,17 @@ def find_bad_bits(values: dict) -> list:
     bin_goal_z = bin(goal_z).replace("0b", "")
     current_z = calculate_number(values)
     bin_current_z = bin(current_z).replace("0b", "")
-    num_bits = len(bin_current_z)
+    num_bits = len(bin_goal_z)
     bad_bits = []
-    for index in range(len(bin_current_z)):
+    for index in range(len(bin_goal_z)):
         if bin_current_z[index] != bin_goal_z[index]:
             bad_bits.append(num_bits - index)
     return bad_bits
+
+
+def find_swap(bad_bit: str, values: dict, connections: dict) -> list:
+    z_wire = "z" + "{:02d}".format(bad_bit)
+    print(z_wire)
+    current_val = values[z_wire]
+    current_input = connections[z_wire]
+    pass
