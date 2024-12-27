@@ -131,7 +131,7 @@ def logical_xor(input_1: int, input_2: int) -> int:
 
 
 def logical_and(input_1: int, input_2: int) -> int:
-    if input_1 == input_2:
+    if input_1 + input_2 == 2:
         return 1
     else:
         return 0
